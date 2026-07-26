@@ -4,7 +4,7 @@
 #include "driver/ledc.h"
 
 // Hardware Definitions
-#define SERVO_GPIO              4           // GPIO pin connected to the goBILDA injector signal
+#define SERVO_GPIO              33           // GPIO pin connected to the goBILDA injector signal
 #define LEDC_TIMER              LEDC_TIMER_0
 #define LEDC_MODE               LEDC_LOW_SPEED_MODE
 #define LEDC_OUTPUT_IO          SERVO_GPIO
@@ -16,6 +16,11 @@
 #define SERVO_MIN_PULSE_DUTY    410          // 500 us pulse (0 degrees)
 #define SERVO_MID_PULSE_DUTY    1229         // 1500 us pulse (90 degrees)
 #define SERVO_MAX_PULSE_DUTY    2048         // 2500 us pulse (180 degrees)
+
+// 14-bit duty values @ 50 Hz for 1000us - 200us pulse range
+//#define SERVO_MIN_PULSE_DUTY    819          // 1000 us pulse (115 RPM CCW)
+//#define SERVO_MID_PULSE_DUTY    1229         // 1500 us pulse (0 RPM)
+//#define SERVO_MAX_PULSE_DUTY    1638         // 2000 us pulse (115 RPM CW)
 
 void init_servo_pwm(void)
 {
@@ -53,17 +58,31 @@ void app_main(void)
     printf("Initializing Servo PWM on GPIO %d...\n", SERVO_GPIO);
     init_servo_pwm();
 
-    printf("Moving Servo to 0 Degrees (Min Pulse)\n");
-    set_servo_duty(SERVO_MIN_PULSE_DUTY);
-    vTaskDelay(pdMS_TO_TICKS(1500));
+    for (int i = 0; i < 3; i++) {
+        printf("Moving Servo to 0 Degrees (Min Pulse)\n");
+        set_servo_duty(SERVO_MIN_PULSE_DUTY);
+        vTaskDelay(pdMS_TO_TICKS(1500));
 
-    printf("Moving Servo to 90 Degrees (Mid Pulse)\n");
-    set_servo_duty(SERVO_MID_PULSE_DUTY);
-    vTaskDelay(pdMS_TO_TICKS(1500));
+        //printf("Moving Servo to 90 Degrees (Mid Pulse)\n");
+        //set_servo_duty(SERVO_MID_PULSE_DUTY);
+        //vTaskDelay(pdMS_TO_TICKS(1500));
 
-    printf("Moving Servo to 180 Degrees (Max Pulse)\n");
-    set_servo_duty(SERVO_MAX_PULSE_DUTY);
-    vTaskDelay(pdMS_TO_TICKS(1500));
+        printf("Moving Servo to 180 Degrees (Max Pulse)\n");
+        set_servo_duty(SERVO_MAX_PULSE_DUTY);
+        vTaskDelay(pdMS_TO_TICKS(1500));
+
+        printf("Moving Servo to 0 Degrees (Min Pulse)\n");
+        set_servo_duty(SERVO_MIN_PULSE_DUTY);
+        vTaskDelay(pdMS_TO_TICKS(1500));
+
+        //printf("Moving Servo to 90 Degrees (Mid Pulse)\n");
+        //set_servo_duty(SERVO_MID_PULSE_DUTY);
+        //vTaskDelay(pdMS_TO_TICKS(1500));
+
+        printf("Moving Servo to 180 Degrees (Max Pulse)\n");
+        set_servo_duty(SERVO_MAX_PULSE_DUTY);
+        vTaskDelay(pdMS_TO_TICKS(1500));
+    }
 
     ledc_stop(LEDC_MODE, LEDC_CHANNEL, 0);    
 }
