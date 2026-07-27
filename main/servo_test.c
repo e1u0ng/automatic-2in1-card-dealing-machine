@@ -34,6 +34,15 @@ void init_servo_pwm(void)
     };
     ledc_timer_config(&ledc_timer);
 
+    ledc_timer_config_t ledc_timer1 = {
+        .speed_mode       = LEDC_MODE,
+        .timer_num        = LEDC_TIMER_1,
+        .duty_resolution  = LEDC_DUTY_RES,
+        .freq_hz          = LEDC_FREQUENCY,
+        .clk_cfg          = LEDC_AUTO_CLK
+    };
+    ledc_timer_config(&ledc_timer1);
+
     // 2. Configure the LEDC Channel on GPIO 17
     ledc_channel_config_t ledc_channel = {
         .speed_mode     = LEDC_MODE,
@@ -45,12 +54,29 @@ void init_servo_pwm(void)
         .hpoint         = 0
     };
     ledc_channel_config(&ledc_channel);
+
+    ledc_channel_config_t ledc_channel1 = {
+        .speed_mode     = LEDC_MODE,
+        .channel        = LEDC_CHANNEL_1,
+        .timer_sel      = LEDC_TIMER_1,
+        .intr_type      = LEDC_INTR_DISABLE,
+        .gpio_num       = 4,
+        .duty           = 0, // Initial duty cycle
+        .hpoint         = 0
+    };
+    ledc_channel_config(&ledc_channel1);
 }
 
-void set_servo_duty(uint32_t duty)
+void set_servo_duty_1(uint32_t duty)
 {
     ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, duty);
     ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
+}
+
+void set_servo_duty_2(uint32_t duty)
+{
+    ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_1, duty);
+    ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_1);
 }
 
 void app_main(void)
@@ -58,31 +84,23 @@ void app_main(void)
     printf("Initializing Servo PWM on GPIO %d...\n", SERVO_GPIO);
     init_servo_pwm();
 
+    set_servo_duty_2(1638);
+
     for (int i = 0; i < 3; i++) {
+        printf("Moving Servo to 180 Degrees (Max Pulse)\n");
+        set_servo_duty_1(SERVO_MAX_PULSE_DUTY);
+        vTaskDelay(pdMS_TO_TICKS(1500));
+
         printf("Moving Servo to 0 Degrees (Min Pulse)\n");
-        set_servo_duty(SERVO_MIN_PULSE_DUTY);
+        set_servo_duty_1(SERVO_MIN_PULSE_DUTY);
         vTaskDelay(pdMS_TO_TICKS(1500));
 
         //printf("Moving Servo to 90 Degrees (Mid Pulse)\n");
         //set_servo_duty(SERVO_MID_PULSE_DUTY);
         //vTaskDelay(pdMS_TO_TICKS(1500));
-
-        printf("Moving Servo to 180 Degrees (Max Pulse)\n");
-        set_servo_duty(SERVO_MAX_PULSE_DUTY);
-        vTaskDelay(pdMS_TO_TICKS(1500));
-
-        printf("Moving Servo to 0 Degrees (Min Pulse)\n");
-        set_servo_duty(SERVO_MIN_PULSE_DUTY);
-        vTaskDelay(pdMS_TO_TICKS(1500));
-
-        //printf("Moving Servo to 90 Degrees (Mid Pulse)\n");
-        //set_servo_duty(SERVO_MID_PULSE_DUTY);
-        //vTaskDelay(pdMS_TO_TICKS(1500));
-
-        printf("Moving Servo to 180 Degrees (Max Pulse)\n");
-        set_servo_duty(SERVO_MAX_PULSE_DUTY);
-        vTaskDelay(pdMS_TO_TICKS(1500));
     }
+
+    set_servo_duty_2(1229);
 
     ledc_stop(LEDC_MODE, LEDC_CHANNEL, 0);    
 }
