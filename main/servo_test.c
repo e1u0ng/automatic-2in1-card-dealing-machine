@@ -84,7 +84,7 @@ void app_main(void)
     printf("Initializing Servo PWM on GPIO %d...\n", SERVO_GPIO);
     init_servo_pwm();
 
-    set_servo_duty_2(1638);
+    //set_servo_duty_2(1638);
 
     for (int i = 0; i < 3; i++) {
         printf("Moving Servo to 180 Degrees (Max Pulse)\n");
@@ -92,7 +92,7 @@ void app_main(void)
         vTaskDelay(pdMS_TO_TICKS(1500));
 
         printf("Moving Servo to 0 Degrees (Min Pulse)\n");
-        set_servo_duty_1(SERVO_MIN_PULSE_DUTY);
+        set_servo_duty_1(1500);
         vTaskDelay(pdMS_TO_TICKS(1500));
 
         //printf("Moving Servo to 90 Degrees (Mid Pulse)\n");
@@ -100,7 +100,7 @@ void app_main(void)
         //vTaskDelay(pdMS_TO_TICKS(1500));
     }
 
-    set_servo_duty_2(1229);
+    //set_servo_duty_2(1229);
 
     ledc_stop(LEDC_MODE, LEDC_CHANNEL, 0);    
 }
