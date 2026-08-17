@@ -84,9 +84,11 @@ void app_main(void)
     printf("Initializing Servo PWM on GPIO %d...\n", SERVO_GPIO);
     init_servo_pwm();
 
-    set_servo_duty_1(SERVO_MAX_PULSE_DUTY);
-    set_servo_duty_2(SERVO_MAX_PULSE_DUTY);
-    vTaskDelay(pdMS_TO_TICKS(10000));
+    set_servo_duty_1(SERVO_MID_PULSE_DUTY+409);
+    vTaskDelay(pdMS_TO_TICKS(50));
+    set_servo_duty_2(SERVO_MID_PULSE_DUTY+409);
+    vTaskDelay(pdMS_TO_TICKS(7000));
+    
 
     /*for (int i = 0; i < 52; i++) {
 
