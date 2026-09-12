@@ -20,6 +20,7 @@
 dispenser_state_t dispenser_state = IDLE;
 
 void init_dispenser(void) {
+    // Configure LEDC timer 
     ledc_timer_config_t ledc_timer = {
         .speed_mode       = LEDC_MODE,
         .timer_num        = LEDC_TIMER_0,
@@ -29,6 +30,7 @@ void init_dispenser(void) {
     };
     ledc_timer_config(&ledc_timer);   
 
+    // Configure LEDC channel for dispenser servo
     ledc_channel_config_t ledc_channel2 = {
         .speed_mode     = LEDC_MODE,
         .channel        = LEDC_CHANNEL_2,
@@ -50,10 +52,10 @@ void set_dispenser_servo_pos(uint32_t duty)
 void dispense_card(int cards) {
     dispenser_state = DISPENSING;
     for (int i = 0; i < cards; i++) {
-        set_dispenser_servo_pos(SERVO_MAX_PULSE_DUTY);
+        set_dispenser_servo_pos(SERVO_MAX_PULSE_DUTY); // resets
         vTaskDelay(pdMS_TO_TICKS(500));
 
-        set_dispenser_servo_pos(SERVO_SHOOT_DUTY);
+        set_dispenser_servo_pos(SERVO_SHOOT_DUTY); // launches card
         vTaskDelay(pdMS_TO_TICKS(200));
     }
     dispenser_state = IDLE;

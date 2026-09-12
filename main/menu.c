@@ -93,7 +93,7 @@ static void button_timer_cb(void* arg) {
 
     if (xSequencerTaskHandle != NULL) {
         switch(shuffle_deal_mode) {
-            case SHUFFLE:
+            case SHUFFLE: // hold to shuffle, otherwise stop shuffle
                 static sequencer_cmd_t last_cmd = CMD_STOP_SHUFFLE;
                 sequencer_cmd_t target_cmd = is_shuffle_pressed ? CMD_START_SHUFFLE : CMD_STOP_SHUFFLE;
 
@@ -102,7 +102,7 @@ static void button_timer_cb(void* arg) {
                     last_cmd = target_cmd;
                 }
                 break;
-            case DEAL:
+            case DEAL: // press to start deal process
                 if (!is_shuffle_pressed) {
                     shuffle_press_ticks = 0;
                     shuffle_handled = false;     
@@ -114,7 +114,7 @@ static void button_timer_cb(void* arg) {
                     shuffle_handled = true;
                 }
                 break;
-            case SHUFFLE_DEAL:
+            case SHUFFLE_DEAL: // press to start shuffling for 4000 ms then start deal process
                 if (!is_shuffle_pressed) {
                     shuffle_press_ticks = 0;
                     shuffle_handled = false;
@@ -129,7 +129,7 @@ static void button_timer_cb(void* arg) {
         }
     }
 
-    if (!is_menu_pressed) {
+    if (!is_menu_pressed) { // press to cycle through editing config values in the menu
         menu_press_ticks = 0;
         menu_handled = false;
     } else {
@@ -142,6 +142,7 @@ static void button_timer_cb(void* arg) {
 }
 
 void init_switch_gpio(void) {
+    // configure shuffle deal encoder switch pin
     gpio_config_t io_conf_s = {
         .pin_bit_mask = (1ULL << GPIO_SHUFFLE_DEAL_SW_PIN),
         .mode = GPIO_MODE_INPUT,
@@ -151,6 +152,7 @@ void init_switch_gpio(void) {
     };
     gpio_config(&io_conf_s);
 
+    // configure menu encoder switch pin
     gpio_config_t io_conf_m = {
         .pin_bit_mask = (1ULL << GPIO_MAIN_CONTROl_MENU_SW_PIN),
         .mode = GPIO_MODE_INPUT,
@@ -280,19 +282,19 @@ int get_extra_cards(void) {
     return config.extra_cards;
 }
 
-void set_num_player(int num) {
+void set_num_player(int num) { // within 2-8
     if (num < 2) num = 2;
     if (num > 8) num = 8;
     config.num_players = num;
 }
 
-void set_cards_per_hand(int num) {
+void set_cards_per_hand(int num) { // within 1-10
     if (num < 1) num = 1;
     if (num > 10) num = 10;
     config.cards_per_hand = num;
 }
 
-void set_extra_cards(int num) {
+void set_extra_cards(int num) { // within 0-5
     if (num < 0) num = 0;
     if (num > 5) num = 5;
     config.extra_cards = num;
@@ -374,10 +376,7 @@ void render_menu(void) {
     lcd_send_string(line_buff);    
 }
 
-/**
- * @brief Returns the number of detent steps moved since last check.
- * @return +1 for clockwise click, -1 for counter-clockwise click, 0 if unmoved.
- */
+// Returns the number of detent steps moved since last check
 int get_menu_encoder_delta(void) {
     if (menu_pcnt_unit == NULL) {
         ESP_LOGE("ENCODER", "menu_pcnt_unit is NULL! PCNT driver was not initialized.");
@@ -398,10 +397,7 @@ int get_menu_encoder_delta(void) {
     return steps;
 }
 
-/**
- * @brief Returns the number of detent steps moved since last check.
- * @return +1 for clockwise click, -1 for counter-clockwise click, 0 if unmoved.
- */
+// Returns the number of detent steps moved since last check
 int get_shuffle_encoder_delta(void) {
     if (menu_pcnt_unit == NULL) {
         ESP_LOGE("ENCODER", "menu_pcnt_unit is NULL! PCNT driver was not initialized.");

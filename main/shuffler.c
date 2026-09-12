@@ -21,6 +21,7 @@
 shuffler_state_t shuffler_state = STOPPED;
 
 void init_shuffler(void) {
+    // Configure LEDC timer
     ledc_timer_config_t ledc_timer = {
         .speed_mode       = LEDC_MODE,
         .timer_num        = LEDC_TIMER_0,
@@ -30,26 +31,26 @@ void init_shuffler(void) {
     };
     ledc_timer_config(&ledc_timer); 
 
-    // 2. Configure LEDC channel for left shuffler servo
+    // Configure LEDC channel for left shuffler servo
     ledc_channel_config_t ledc_channel = {
         .speed_mode     = LEDC_MODE,
         .channel        = LEDC_CHANNEL_0,
         .timer_sel      = LEDC_TIMER_0,
         .intr_type      = LEDC_INTR_DISABLE,
         .gpio_num       = GPIO_SERVO_SHUFFLER_1,
-        .duty           = 1229, // Initial duty cycle
+        .duty           = SERVO_MID_PULSE_DUTY, // Initial duty cycle
         .hpoint         = 0
     };
     ledc_channel_config(&ledc_channel);
 
-    // 2. Configure LEDC channel for right shuffler servo
+    // Configure LEDC channel for right shuffler servo
     ledc_channel_config_t ledc_channel1 = {
         .speed_mode     = LEDC_MODE,
         .channel        = LEDC_CHANNEL_1,
         .timer_sel      = LEDC_TIMER_0,
         .intr_type      = LEDC_INTR_DISABLE,
         .gpio_num       = GPIO_SERVO_SHUFFLER_2,
-        .duty           = 1229, // Initial duty cycle
+        .duty           = SERVO_MID_PULSE_DUTY, // Initial duty cycle
         .hpoint         = 0
     };
     ledc_channel_config(&ledc_channel1);
@@ -80,10 +81,6 @@ void stop_shuffler(void) {
     set_right_shuffler_servo_speed(SERVO_MID_PULSE_DUTY);
 }
 
-/**
- * @brief task to run the shuffler for specified time
- * @param ms time in milliseconds
- */
 void shuffle_for_time(int32_t ms) {
     start_shuffler();
     vTaskDelay(pdMS_TO_TICKS(ms));

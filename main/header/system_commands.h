@@ -4,6 +4,9 @@
 #include <freertos/FREERTOS.h>
 #include <freertos/task.h>
 
+/**
+ * @brief types of physical subsystem commands ran by the shuffle-deal mode button
+ */
 typedef enum {
     CMD_NONE = 0,
     CMD_START_SHUFFLE,
@@ -14,6 +17,9 @@ typedef enum {
 
 extern TaskHandle_t xSequencerTaskHandle;
 
+/**
+ * @brief deals the card deck based on the config set in menu
+ */
 void command_system_task(void *pvParameters);
 
 #endif

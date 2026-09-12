@@ -143,10 +143,6 @@ void motor_stop(void)
     set_motor_speed(0);
 }
 
-/**
- * @brief set the motor speed and direction
- * @param duty 0<->1023: FORWARD, -1023<->0: REVERSE, 0: STOP
- */
 void set_motor_speed_and_direction(int32_t duty) {
     if (duty > 0) {
         gpio_set_level(GPIO_DIR_IN1, 1);
@@ -172,7 +168,7 @@ void encoder_logger_task(void *pvParameters)
     }
 }
 
-int clamp(int input, int min, int max) {
+int clamp(int input, int min, int max) { // within min and max range
     if (input > max) return max;
     else if (input < min) return min;
     else return input; 
@@ -236,7 +232,6 @@ void move_to_position_task(void *pvParameters) {
     // Stop motor safety call
     set_motor_speed_and_direction(0);
 
-    // FreeRTOS tasks must delete themselves when done
     vTaskDelete(NULL);
 }
 
