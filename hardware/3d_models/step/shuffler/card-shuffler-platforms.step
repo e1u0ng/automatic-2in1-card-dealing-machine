@@ -10,11 +10,11 @@ FILE_DESCRIPTION(
 
 FILE_NAME(
 /* name */ 'card-shuffler-platforms.step',
-/* time_stamp */ '2026-08-17T15:54:32-07:00',
+/* time_stamp */ '2026-09-12T01:21:29-07:00',
 /* author */ (''),
 /* organization */ (''),
-/* preprocessor_version */ 'ST-DEVELOPER v20.1',
-/* originating_system */ 'Autodesk Translation Framework v15.8.0.0',
+/* preprocessor_version */ 'ST-DEVELOPER v20.2',
+/* originating_system */ 'Autodesk Translation Framework v15.15.0.0',
 /* authorisation */ '');
 
 FILE_SCHEMA (('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
